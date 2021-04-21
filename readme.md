@@ -62,3 +62,25 @@ firstName
 
 <hr />
 <hr />
+
+## Data Types
+
+1. Generics
+2. Decorators
+3. Static Types
+    * Built-in types
+        1. Number
+        2. String
+        3. Boolean
+        4. Void
+        5. Null
+        6. Undefined
+        7. Never
+        8. Any
+    
+    * User defined
+        1. Array
+        2. Tuple
+        3. Enumeration (enum)
+        4. Class
+        5. Interface
