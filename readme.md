@@ -33,16 +33,15 @@ node main.js
 
 Few notable commands -
 
-| Command          	| Description                                                      	|
-|------------------	|------------------------------------------------------------------	|
-| tsc              	| Run a compile with compiler settings from tsconfig.json          	|
-| tsc file_name.ts 	| Transpile just the file_name.ts with compiler defaults           	|
-| tsc src/*ts      	| Transpile any .ts file in the src folder with compiler defaults  	|
-
+| Command          | Description                                                     |
+| ---------------- | --------------------------------------------------------------- |
+| tsc              | Run a compile with compiler settings from tsconfig.json         |
+| tsc file_name.ts | Transpile just the file_name.ts with compiler defaults          |
+| tsc src/\*ts     | Transpile any .ts file in the src folder with compiler defaults |
 
 > The convetion in TypeScipt is to use PasacalCase or camelCase to name identifiers
 
-PascalCase convention - 
+PascalCase convention -
 
 ```javaScript
 
@@ -61,26 +60,3 @@ firstName
 ```
 
 <hr />
-<hr />
-
-## Data Types
-
-1. Generics
-2. Decorators
-3. Static Types
-    * Built-in types
-        1. Number
-        2. String
-        3. Boolean
-        4. Void
-        5. Null
-        6. Undefined
-        7. Never
-        8. Any
-    
-    * User defined
-        1. Array
-        2. Tuple
-        3. Enumeration (enum)
-        4. Class
-        5. Interface
