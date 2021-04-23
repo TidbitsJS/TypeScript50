@@ -92,3 +92,7 @@ Collection of related values that can be numbers or strings as a set of named co
 Enums are preprocessed and are not tested at compile time or runtime.
 
 Keyword - `enum`
+
+<hr />
+
+## Operators
