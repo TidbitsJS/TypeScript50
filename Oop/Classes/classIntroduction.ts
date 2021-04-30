@@ -42,7 +42,6 @@ new named_class().say()
 
 
 // Constructor
-
 class Book {
     name;
     author;
@@ -62,3 +61,36 @@ thinkBook.whichBook()
 
 let atomicBook = new Book("Atomic Habits", "James Clear")
 atomicBook.whichBook()
+
+// Different class
+class Point {
+    x: number;
+    y: number;
+
+    locate() {
+        console.log("Point is located at (", this.x, ", ", this.y, ") ")
+    }
+}
+
+const point1 = new Point()
+point1.x = 10
+point1.y = 20
+
+point1.locate()
+
+// readonly class
+class Welcome {
+    readonly message: string = "Greeting"
+    name;
+
+    constructor(name: string) {
+        this.name = name
+    }
+
+    sayHello() {
+        console.log(this.message, ", ", this.name)
+    }
+}
+
+const welcomeMe = new Welcome('Tidbit')
+welcomeMe.sayHello()
