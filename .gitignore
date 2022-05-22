@@ -1,5 +1,11 @@
+# vscode
 .vscode
+
+# typescript
 *js
+
+# node modules
 /node_modules
 
+# lock
 yarn.lock
