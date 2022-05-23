@@ -1,5 +1,24 @@
 {
+  "name": "typescript50",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TidbitsJS/TypeScript50.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TidbitsJS/TypeScript50/issues"
+  },
+  "homepage": "https://github.com/TidbitsJS/TypeScript50#readme",
   "devDependencies": {
-    "typescript": "^4.2.4"
+    "tslint": "^6.1.3",
+    "typescript": "^4.6.4"
   }
 }
