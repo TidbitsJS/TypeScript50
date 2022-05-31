@@ -176,7 +176,7 @@ const book: Article = {
 
 ### Structural Typing and Excess Property Checks
 
-- If we assign a value with properties not in the specified type, TypeScript displays an error
+If we assign a value with properties not in the specified type, TypeScript displays an error
 
 ```typescript
 // Property 'rating' is not allowed
@@ -263,3 +263,200 @@ const anotherMovie: Article = missingProperties;
 ```
 
 The structural contract is not fulfilled.
+
+#
+
+### Objects as Parameters
+
+We can also use our custom defined types as parameters in functions:
+
+```typescript
+function createArticleElement(article: Article): string {
+  const title = article.title;
+  const price = addVAT(article.price, article.vat);
+  return `<h2>Buy ${title} for ${price}</h2>`;
+}
+```
+
+Inline object type with only the properties we expect:
+
+```typescript
+function createArticleElement(article: {
+  title: string;
+  price: number;
+  vat: number;
+}): string {
+  const title = article.title;
+  const price = addVAT(article.price, article.vat);
+  return `<h2>Buy ${title} for ${price}</h2>`;
+}
+```
+
+Passing elements of type Article still would work:
+
+```typescript
+const movie: Article = {
+  title: "Helvetica",
+  price: 6.66,
+  vat: 0.19,
+  stock: 1000,
+  description: "90 minutes of gushing about Helvetica",
+};
+
+createArticleElement(movie);
+```
+
+The structural contract is still fulfilled.
+
+But just like it is with direct value assignments, passing an object with too many properties directly to a function will trigger excess property checks:
+
+```typescript
+// Boom! rating is one property too many
+createArticleElement({
+  title: "Design Systems by Alla Kholmatova",
+  price: 20,
+  vat: 0.19,
+  rating: 5,
+});
+```
+
+#
+
+### Object Type Tool Belt
+
+1. typeof
+
+Object types can be very long. Sometimes we work with data structures that are deeply nested and have tons of properties. Look at the object that defines a default order in our online shop:
+
+```typescript
+const defaultOrder = {
+  articles: [
+    {
+      price: 1200.5,
+      vat: 0.2,
+      title: "Macbook Air Refurbished - 2013",
+    },
+    {
+      price: 9,
+      vat: 0,
+      title: "I feel smashing subscription",
+    },
+  ],
+  customer: {
+    name: "Fritz Furball",
+    address: {
+      city: "Smashing Hill",
+      zip: "90210",
+      street: "Whisker-ia Lane",
+      number: "1337",
+    },
+    dateOfBirth: new Date(2006, 9, 1),
+  },
+};
+```
+
+This object is a bit complex! We could define the type in one sitting:
+
+```typescript
+type Order = {
+  articles: {
+    price: number;
+    vat: number;
+    title: number;
+  }[];
+  customer: {
+    name: string;
+    address: {
+      city: string;
+      zip: string;
+      street: string;
+      number: string;
+    };
+    dateOfBirth: Date;
+  };
+};
+```
+
+Or we could create lots of smaller types:
+
+```typescript
+type ArticleStub = {
+  price: number;
+  vat: number;
+  title: string;
+};
+
+type Address = {
+  city: string;
+  zip: string;
+  street: string;
+  number: string;
+};
+
+type Customer = {
+  name: string;
+  address: Address;
+  dateOfBirth: Date;
+};
+
+type Order = {
+  articles: ArticleStub[];
+  customer: Customer;
+};
+```
+
+or mix of both!
+
+In either case, we end up either maintaining a lot of types or creating unwieldy types. All we wanted was to get a quick type for a data structure in order to have better autocompletion and type safety in our methods.
+
+In TypeScript’s type system, the typeof operator takes any object (or function, or constant) and extracts the shape of it:
+
+```typescript
+type Order = typeof defaultOrder;
+```
+
+This gives us a type we can use anywhere in our code:
+
+```typescript
+/**
+ * Checks if all our orders have articles
+ */
+function checkOrders(orders: Order[]) {
+  let valid = true;
+  for (let order of orders) {
+    valid = valid && order.articles.length > 0;
+  }
+  return valid;
+}
+```
+
+The moment you update your defaultOrder object, the type Order gets updated as well!
+
+#
+
+### Optional Properties
+
+A question mark after a property’s name declares that property optional. This means they can be available, but they could also be missing.
+
+```typescript
+type Article = {
+  title: string;
+  price: number;
+  vat: number;
+  stock?: number;
+  description?: string;
+};
+```
+
+We have to check if they are available:
+
+```typescript
+unction isArticleInStock(article: Article) {
+  // this check is necessary to make sure
+  // the optional property exists
+  if(article.stock) {
+    return article.stock > 0
+  }
+  return false
+}
+```
