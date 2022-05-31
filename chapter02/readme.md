@@ -460,3 +460,159 @@ unction isArticleInStock(article: Article) {
   return false
 }
 ```
+
+#
+
+### Typing Classes
+
+TypeScript can be seen as a programming language that erases to JavaScript. On top of JavaScript code that exists and is valid, we add another layer of type information that disappears once the compiler has run.
+
+JavaScript features classes as an alternate syntactic form for the constructor function and prototype pattern.
+
+Here’s a class in pure JavaScript that applies a discount to one of our articles:
+
+```typescript
+class Discount {
+  isPercentage;
+  amount;
+
+  constructor(isPercentage, amount) {
+    this.isPercentage = isPercentage;
+    this.amount = amount;
+  }
+
+  apply(article) {
+    if (this.isPercentage) {
+      article.price = article.price - article.price * this.amount;
+    } else {
+      article.price = article.price - this.amount;
+    }
+  }
+}
+
+// A discount that shaves off 10 EUR
+const discount = new Discount(false, 10);
+discount.apply({
+  price: 39,
+  vat: 0.2,
+  title: "Form Design Patterns",
+});
+```
+
+With a few little extra type annotations, we can have proper tooling and can make sure that we construct correct objects:
+
+```typescript
+class Discount {
+  isPercentage: boolean;
+  amount: number;
+
+  constructor(isPercentage: boolean, amount: number) {
+    this.isPercentage = isPercentage;
+    this.amount = amount;
+  }
+
+  apply(article: Article) {
+    if (this.isPercentage) {
+      article.price = article.price - article.price * this.amount;
+    } else {
+      article.price = article.price - this.amount;
+    }
+  }
+}
+
+let discount: Discount = new Discount(true, 0.2);
+```
+
+Classes have two parts:
+
+1. The constructor function
+
+   We defined our constructor function to take a Boolean isPercentage, and a number for the amount we want to shave off. The moment we call new Discount(true, 0.2), we invoke the constructor function.
+
+2. Prototype
+
+   This is everything around the constructor function: two fields (isPercentage, amount) and a function to apply the discount to an article.
+
+The prototype defines the shape of the object that is returned by invoking the constructor.
+
+Now that we know the shape, we can even assign regularly generated objects to a variable of type Discount.
+
+```typescript
+let allProductsTwentyBucks: Discount = {
+  isPercentage: false,
+  amount: 20,
+  apply(article) {
+    article.price = 20;
+  },
+};
+```
+
+This is a valid Discount, as the shape is intact. But it changes the semantics of the Discount class tremendously.
+
+We can define an object type, and create a new Discount object via a constructor:
+
+```typescript
+type DiscountType = {
+  isPercentage: boolean;
+  amount: number;
+  apply(article: Article): void;
+};
+
+let disco: DiscountType = new Discount(true, 0.2);
+```
+
+One main feature of classes is that they are extensible. You can take an existing class and extend it, overriding and adding features.
+
+```typescript
+/**
+ * This class always gives 20 %, but only if
+ * the price is not higher than 40 EUR
+ */
+class TwentyPercentDiscount extends Discount {
+  // No special constructor
+  constructor() {
+    // But we call the super constructor of
+    // Discount
+    super(true, 0.2);
+  }
+
+  apply(article: Article) {
+    if (article.price <= 40) {
+      super.apply(article);
+    }
+  }
+}
+```
+
+We created a discount class that always applies 20%, but only if the article’s price is lower than 40 Euro. In this special case, TwentyPercentDiscount is of the same shape as Discount, which means that their type declaration is interchangeable:
+
+```typescript
+let disco1: Discount = new TwentyPercentDiscount(); // OK
+let disco2: TwentyPercentDiscount = new Discount(true, 0.3); // OK! Semantics changed!
+```
+
+Validation feature to TwentyPercentDiscount:
+
+```typescript
+class TwentyPercentDiscount extends Discount {
+  constructor() {
+    super(true, 0.2);
+  }
+
+  apply(article: Article) {
+    if (this.isValidForDiscount(article)) {
+      super.apply(article);
+    }
+  }
+
+  isValidForDiscount(article: Article) {
+    return article.price <= 40;
+  }
+}
+
+let disco1: Discount = new TwentyPercentDiscount(); // Still OK!
+
+// Error! We miss the `isValidForDiscount`
+// method
+let disco2: TwentyPercentDiscount = new Discount(true, 0.3);
+```
