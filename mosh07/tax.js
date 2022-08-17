@@ -6,3 +6,7 @@
 export function calculateTax(income) {
   return income * 0.3;
 }
+
+export function sayHello(name) {
+  console.log(`${name} says hello`);
+}
