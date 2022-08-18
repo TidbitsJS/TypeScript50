@@ -8,12 +8,12 @@ class ReminderService {
 
   async getReminders() {
     const response = await this.http.get<Reminder[]>("/todos");
-    return (await response).data;
+    return response.data;
   }
 
   async addReminder(title: string) {
-    const response = this.http.post<Reminder>("/todos", { title });
-    return (await response).data;
+    const response = await this.http.post<Reminder>("/todos", { title });
+    return response.data;
   }
 
   async removeReminder(id: number) {
